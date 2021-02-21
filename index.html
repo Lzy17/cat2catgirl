@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"> </script>
+    <title>Document</title>
+</head>
+<body>
+    <img id="test" src="20.jpg">
+    <canvas id="output"></canvas>
+    <script>
+        (async() => {
+            const model = await tf.loadGraphModel("model/model.json");
+            window.model = model;
+            console.log("Model loaded");
+
+            const example = tf.browser.fromPixels(document.getElementById("test"));  // for example
+            const now = performance.now();
+            const prediction = model.predict(tf.mul(tf.reshape(example, [-1, 128, 128, 3]), 1/ 255));
+            console.log(`time elapsed: ${(performance.now() - now).toFixed(1)} ms`);
+            tf.browser.toPixels(tf.reshape(prediction, [128, 128, 3]), document.getElementById("output"));
+        })();
+    </script>
+</body>
+</html>
